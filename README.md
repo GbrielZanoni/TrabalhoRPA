@@ -64,16 +64,16 @@ projeto/
 git clone https://github.com/GbrielZanoni/TrabalhoRPA.git
 cd TrabalhoRPA
 
-# 2. Crie e ative um ambiente virtual
-python -m venv .venv
-.venv\Scripts\activate  # Windows
-# ou no Linux/macOS:
-# source .venv/bin/activate
+# 2. Instale o Poetry (caso ainda não tenha)
+# https://python-poetry.org/docs/#installation
 
-# 3. Instale as dependências
-pip install -r requirements.txt
+# 3. Instale as dependências e crie o ambiente virtual automaticamente
+poetry install
 
-# 4. Execute o painel Streamlit
+# 4. Ative o ambiente virtual gerenciado pelo Poetry
+poetry shell
+
+# 5. Execute o painel Streamlit
 cd projeto/streamlit
 streamlit run streamlit.py
 ```
