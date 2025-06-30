@@ -8,12 +8,10 @@
 ![License](https://img.shields.io/github/license/GbrielZanoni/TrabalhoRPA)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-blue)
 [![Wiki](https://img.shields.io/badge/docs-wiki-blue)](https://github.com/GbrielZanoni/TrabalhoRPA/wiki)
-![Build](https://github.com/SeuUsuario/SeuRepo/actions/workflows/python-app.yml/badge.svg)
 ![Coverage](https://img.shields.io/badge/Coverage-95%25-success)
 ![CodeQL](https://img.shields.io/badge/CodeQL-Static%20Analysis-blue?logo=github)
 ![Gitter](https://img.shields.io/badge/Chat-Gitter-red?logo=gitter&logoColor=white)
 ![Discord](https://img.shields.io/badge/Discord-Energral-blue?logo=discord&logoColor=white)
-![Snap](https://img.shields.io/badge/Snapcraft-Available-orange?logo=snapcraft)
 ![PyPI](https://img.shields.io/badge/PyPI-Not%20Published-lightgrey?logo=pypi)
 ![Made with Love](https://img.shields.io/badge/Made%20with-%E2%9D%A4-red)
 
