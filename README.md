@@ -1,4 +1,11 @@
 [![Build](https://github.com/GbrielZanoni/TrabalhoRPA/actions/workflows/streamlit-check.yml/badge.svg)](https://github.com/GbrielZanoni/TrabalhoRPA/actions/workflows/streamlit-check.yml)
+![Python](https://img.shields.io/badge/python-3.11+-blue)
+![Dependencies](https://img.shields.io/badge/dependencies-poetry-blue)
+![License](https://img.shields.io/github/license/GbrielZanoni/TrabalhoRPA)
+![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-blue)
+![Streamlit](https://img.shields.io/badge/built%20with-Streamlit-ff4b4b?logo=streamlit&logoColor=white)
+[![Wiki](https://img.shields.io/badge/docs-wiki-blue)](https://github.com/GbrielZanoni/TrabalhoRPA/wiki)
+![Made with Love](https://img.shields.io/badge/Made%20with-%E2%9D%A4-red)
 
 # 🤖 Atividade de Automação
 
