@@ -1,0 +1,23 @@
+[project]
+name = "atividade-rpa"
+version = "0.5"
+description = "Um projeto de Python interativo para automatizar tarefas manuais de uma empresa de fornecimento elétrico."
+authors = [
+    {name = "Your Name",email = "you@example.com"}
+]
+license = {text = "MIT License"}
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "streamlit (>=1.46.1,<2.0.0)",
+    "pandas (>=2.3.0,<3.0.0)",
+    "plotly (>=6.2.0,<7.0.0)",
+    "pypdf2 (>=3.0.1,<4.0.0)",
+    "fpdf (>=1.7.2,<2.0.0)",
+    "openpyxl (>=3.1.5,<4.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

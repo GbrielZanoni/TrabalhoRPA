@@ -4,3 +4,4 @@ fpdf
 streamlit
 plotly
 PyPDF2
+streamlit-calendar
