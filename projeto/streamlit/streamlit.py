@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 import os
 import plotly.express as px
+from datetime import datetime, date
+from fpdf import FPDF
+from io import BytesIO
 
 st.set_page_config(page_title="Energral | Gestão Operacional", layout="wide")
 st.title("🔧 Painel Gerencial - Energral")
@@ -29,12 +32,51 @@ def carregar_dados():
         dados["alertas"]["data_hora"] = pd.to_datetime(dados["alertas"]["data_hora"], errors="coerce")
     return dados
 
+def gerar_pdf(titulo, df, extras):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", "B", 14)
+    pdf.cell(0, 10, titulo, 0, 1, "C")
+    pdf.set_font("Arial", "", 10)
+    pdf.cell(0, 8, f"Gerado em: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}", 0, 1)
+    pdf.ln(2)
+    for linha in extras:
+        pdf.cell(0, 6, linha, 0, 1)
+    pdf.ln(4)
+    for i, row in df.iterrows():
+        texto = " | ".join(f"{col}: {row[col]}" for col in df.columns[:4])
+        pdf.multi_cell(0, 6, texto, 0, 1)
+
+    pdf_bytes = pdf.output(dest="S").encode("latin1")
+    buffer = BytesIO(pdf_bytes)
+    return buffer
+
 dados = carregar_dados()
 
-aba = st.sidebar.radio("Visão", ["Geral", "Técnicos", "Equipamentos", "Inspeções", "Alertas", "Checklists PDF"])
+from datetime import date
+
+with st.sidebar:
+    st.markdown("## ⚡ Energral")
+    st.markdown("### 📊 Painel de Gestão Operacional")
+    st.markdown("---")
+
+    aba = st.radio(
+        "📁 Navegação",
+        ["Geral", "Técnicos", "Equipamentos", "Inspeções", "Alertas", "Checklists PDF"]
+    )
+
+    st.markdown("---")
+    st.markdown("📅 Hoje é: **{}**".format(date.today().strftime("%d/%m/%Y")))
+    st.caption("Desenvolvido pela equipe de RPA")
 
 if aba == "Geral":
     st.subheader("📌 Visão Geral")
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("Inspeções", len(dados["inspeções"]))
+    col2.metric("Equipamentos", len(dados["equipamentos"]))
+    col3.metric("Técnicos", len(dados["tecnicos"]))
+    col4.metric("Alertas", len(dados["alertas"]))
+    st.markdown("---")
 
     st.markdown("""
     ## 🏢 Sobre o Projeto
@@ -74,12 +116,6 @@ if aba == "Geral":
 
     """)
 
-    col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Inspeções", len(dados["inspeções"]))
-    col2.metric("Equipamentos", len(dados["equipamentos"]))
-    col3.metric("Técnicos", len(dados["tecnicos"]))
-    col4.metric("Alertas", len(dados["alertas"]))
-
 elif aba == "Técnicos":
     st.subheader("👷 Equipes Técnicas")
     df_tec = dados["tecnicos"]
@@ -117,6 +153,14 @@ elif aba == "Técnicos":
 
     st.subheader("📋 Dados Detalhados")
     st.dataframe(df_tec)
+    if st.button("Gerar Relatório de Técnicos"):
+        extras = [
+            f"Total de funcionários: {len(df_tec)}",
+            f"Distribuição de níveis: {niveis.to_dict()}",
+            f"Áreas de atuação: {areas.to_dict() if 'areas' in locals() else 'N/A'}",
+        ]
+        buffer = gerar_pdf("Relatório de Técnicos", df_tec, extras)
+        st.download_button("Baixar PDF", buffer, file_name="relatorio_tecnicos.pdf", mime="application/pdf")
 
 elif aba == "Equipamentos":
     st.subheader("🔌 Equipamentos")
@@ -141,6 +185,14 @@ elif aba == "Equipamentos":
             barmode="group"
         )
         st.plotly_chart(fig_bar, use_container_width=True)
+    if st.button("Gerar Relatório de Equipamentos"):
+        extras = [
+            f"Total de equipamentos: {len(df_eq)}",
+            f"Tipos: {df_eq['tipo'].value_counts().to_dict()}",
+            f"Pontos de instalação: {df_eq['localizacao'].nunique()} locais",
+        ]
+        buffer = gerar_pdf("Relatório de Equipamentos", df_eq, extras)
+        st.download_button("Baixar PDF", buffer, file_name="relatorio_equipamentos.pdf", mime="application/pdf")
 
 elif aba == "Inspeções":
     st.subheader("📄 Inspeções Realizadas")
@@ -170,6 +222,13 @@ elif aba == "Inspeções":
             title="Frequência de Critérios por Item Inspecionado"
         )
         st.plotly_chart(fig_heat, use_container_width=True)
+    if st.button("Gerar Relatório de Inspeções"):
+        extras = [
+            f"Total de inspeções: {len(df_insp)}",
+            f"Critérios de aprovação: {criterio.set_index('Critério')['Quantidade'].to_dict() if 'criterio' in locals() else 'N/A'}",
+        ]
+        buffer = gerar_pdf("Relatório de Inspeções", df_insp, extras)
+        st.download_button("Baixar PDF", buffer, file_name="relatorio_inspecoes.pdf", mime="application/pdf")
 
 elif aba == "Alertas":
     st.subheader("🚨 Alertas e Notificações")
@@ -236,6 +295,14 @@ elif aba == "Alertas":
         st.subheader("📅 Calendário de Alertas")
         calendar(eventos, options=opcoes, key="cal_alertas")
   
+    if st.button("Gerar Relatório de Alertas"):
+        extras = [
+            f"Total de alertas: {len(df_alertas)}",
+            f"Distribuição de status: {df_alertas['status'].value_counts().to_dict()}",
+        ]
+        buffer = gerar_pdf("Relatório de Alertas", df_alertas, extras)
+        st.download_button("Baixar PDF", buffer, file_name="relatorio_alertas.pdf", mime="application/pdf")
+
 elif aba == "Checklists PDF":
     st.subheader("📂 Checklists em PDF")
 
@@ -290,3 +357,11 @@ elif aba == "Checklists PDF":
         acao = df["Ação Tomada"].value_counts().reset_index()
         acao.columns = ["Ação", "Qtd"]
         st.plotly_chart(px.pie(acao, names="Ação", values="Qtd", title="Ações Tomadas"), use_container_width=True)
+    if not df.empty and st.button("Gerar Relatório de Checklists"):
+        extras = [
+            f"Total de checklists: {len(df)}",
+            f"Tipos de inspeção: {df['Tipo'].value_counts().to_dict()}",
+            f"Gravidades: {df['Gravidade'].value_counts().to_dict()}",
+        ]
+        buffer = gerar_pdf("Relatório de Checklists", df, extras)
+        st.download_button("Baixar PDF", buffer, file_name="relatorio_checklists.pdf", mime="application/pdf")
