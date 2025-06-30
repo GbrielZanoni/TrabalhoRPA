@@ -43,10 +43,41 @@ if aba == "Geral":
 
 elif aba == "Técnicos":
     st.subheader("👷 Equipes Técnicas")
-    st.dataframe(dados["tecnicos"])
-    if "nivel_de_experiencia" in dados["tecnicos"].columns:
-        fig = px.histogram(dados["tecnicos"], x="nivel_de_experiencia", title="Distribuição por Nível de Experiência")
-        st.plotly_chart(fig, use_container_width=True)
+    df_tec = dados["tecnicos"]
+
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("Funcionários", len(df_tec))
+
+    niveis = df_tec["nivel_de_experiencia"].value_counts()
+    col2.metric("Júnior", niveis.get("Júnior", 0))
+    col3.metric("Pleno", niveis.get("Pleno", 0))
+    col4.metric("Sênior", niveis.get("Sênior", 0))
+
+    if "area_de_atuacao" in df_tec.columns:
+        areas = df_tec["area_de_atuacao"].value_counts()
+        colunas_areas = st.columns(len(areas))
+        for col, (area, qtd) in zip(colunas_areas, areas.items()):
+            col.metric(area, f"{qtd}")
+
+        import plotly.express as px
+        import pandas as pd
+
+        radar_df = pd.DataFrame({
+            "Área": areas.index,
+            "Quantidade": areas.values
+        })
+
+        fig_radar = px.line_polar(
+            radar_df,
+            r="Quantidade",
+            theta="Área",
+            line_close=True,
+            title="",
+        )
+        st.plotly_chart(fig_radar, use_container_width=True)
+
+    st.subheader("📋 Dados Detalhados")
+    st.dataframe(df_tec)
 
 elif aba == "Equipamentos":
     st.subheader("🔌 Equipamentos")
