@@ -1,4 +1,4 @@
-# 🤖 Trabalho RPA — Bootcamp Energral
+# 🤖 Trabalho de Automação — Bootcamp
 
 Este repositório contém a solução desenvolvida pelos integrantes do bootcamp para realizar a prática de **RPA**.
 
