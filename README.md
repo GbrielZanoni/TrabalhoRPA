@@ -1,3 +1,5 @@
+[![Build](https://github.com/GbrielZanoni/TrabalhoRPA/actions/workflows/streamlit-check.yml/badge.svg)](https://github.com/GbrielZanoni/TrabalhoRPA/actions/workflows/streamlit-check.yml)
+
 # 🤖 Atividade de Automação
 
 Este repositório contém a solução desenvolvida pelos integrantes do bootcamp para realizar a prática de **RPA**.
@@ -77,3 +79,5 @@ poetry shell
 cd projeto/streamlit
 streamlit run streamlit.py
 ```
+
+
