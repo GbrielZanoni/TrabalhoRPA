@@ -107,8 +107,8 @@ if aba == "Geral":
     ---
     ### 👨‍💻 Equipe de Desenvolvimento
 
-    - Ana Julia Martins – [@4nanotfound](https://github.com/4nanotfound)  
-    - Gabriel Zanoni Herculano – [@GbrielZanoni](https://github.com/GbrielZanoni)  
+    - Ana Julia – [@4nanotfound](https://github.com/4nanotfound)  
+    - Gabriel Zanoni – [@GbrielZanoni](https://github.com/GbrielZanoni)  
     - Mateus Euzébio – [@mateuseuz](https://github.com/mateuseuz)  
     - Gabriel Moura – [@gmoura0](https://github.com/gmoura0)  
     - João Gabriel – [@JoaoGabFB](https://github.com/JoaoGabFB)  
