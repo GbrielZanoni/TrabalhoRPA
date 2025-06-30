@@ -1,4 +1,4 @@
-# 🤖 Trabalho de Automação — Bootcamp
+# 🤖 Atividade de Automação
 
 Este repositório contém a solução desenvolvida pelos integrantes do bootcamp para realizar a prática de **RPA**.
 
