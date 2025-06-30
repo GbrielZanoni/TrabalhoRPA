@@ -44,16 +44,17 @@ O objetivo é **automatizar e centralizar o fluxo de inspeções**, reduzindo pa
 
 ## 📁 Estrutura do Repositório
 
-documentos/ → Documentos do Projeto (PDD, ODI, PDI, To-Be, As-Is)
+```text
+documentos/              → Documentos do Projeto (PDD, ODI, PDI, To-Be, As-Is)
 projeto/
-├── checklist/ → Aplicação de geração de checklists (.exe)
-├── streamlit/ → Painel gerencial e visualizações
-│ ├── csv/ → Base de dados (.csv)
-│ └── streamlit.py → App principal
-├── requirements.txt → Dependências do projeto
-├── .gitignore → Itens ignorados no Git
-└── README.md → Este documento
-
+├── checklist/           → Aplicação de geração de checklists (.exe)
+├── streamlit/           → Painel gerencial e visualizações
+│   ├── csv/             → Base de dados (.csv)
+│   └── streamlit.py     → App principal
+├── requirements.txt     → Dependências do projeto
+├── .gitignore           → Itens ignorados no Git
+└── README.md            → Este documento
+```
 ---
 
 ## 🚀 Como Executar
