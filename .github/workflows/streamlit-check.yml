@@ -1,4 +1,4 @@
-name: Verificar Streamlit App
+name: CI
 
 on:
   push:
