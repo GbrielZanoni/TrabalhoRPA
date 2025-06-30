@@ -1,0 +1,101 @@
+ID do Equipamento,Tipo,Localização,Status Atual
+EQUIP001,Medidor,Cirino do Amparo,Inativo
+EQUIP002,Transformador,Pastor do Galho,Operacional
+EQUIP003,Medidor,Mendonça de Fernandes,Com falha
+EQUIP004,Relé,Jesus,Inativo
+EQUIP005,Relé,Almeida,Operacional
+EQUIP006,Relé,Marques do Sul,Em manutenção
+EQUIP007,Medidor,da Mota,Inativo
+EQUIP008,Sensor,Machado da Serra,Operacional
+EQUIP009,Disjuntor,Porto,Em manutenção
+EQUIP010,Disjuntor,Sampaio Grande,Em manutenção
+EQUIP011,Disjuntor,Garcia,Operacional
+EQUIP012,Sensor,Vargas,Inativo
+EQUIP013,Transformador,Costela,Inativo
+EQUIP014,Medidor,Pastor de Leão,Em manutenção
+EQUIP015,Transformador,Pastor da Prata,Com falha
+EQUIP016,Transformador,Aragão do Sul,Em manutenção
+EQUIP017,Sensor,Mendes do Norte,Em manutenção
+EQUIP018,Relé,da Cunha,Com falha
+EQUIP019,Disjuntor,Ribeiro,Inativo
+EQUIP020,Disjuntor,Cavalcanti,Inativo
+EQUIP021,Transformador,Silveira,Com falha
+EQUIP022,Medidor,Casa Grande das Flores,Inativo
+EQUIP023,Medidor,Montenegro,Em manutenção
+EQUIP024,Relé,Ribeiro,Operacional
+EQUIP025,Medidor,Ribeiro,Operacional
+EQUIP026,Sensor,da Luz Paulista,Inativo
+EQUIP027,Disjuntor,Ramos do Amparo,Operacional
+EQUIP028,Relé,Câmara do Norte,Em manutenção
+EQUIP029,Transformador,Aparecida do Norte,Em manutenção
+EQUIP030,Sensor,Rezende de Minas,Operacional
+EQUIP031,Sensor,da Rosa da Serra,Operacional
+EQUIP032,Relé,Borges das Pedras,Inativo
+EQUIP033,Sensor,Siqueira dos Dourados,Com falha
+EQUIP034,Relé,Teixeira,Operacional
+EQUIP035,Disjuntor,Fernandes,Em manutenção
+EQUIP036,Transformador,da Mota,Inativo
+EQUIP037,Relé,Sousa Paulista,Inativo
+EQUIP038,Disjuntor,Sousa das Flores,Inativo
+EQUIP039,Relé,Silva,Em manutenção
+EQUIP040,Medidor,Moraes de Minas,Inativo
+EQUIP041,Medidor,Andrade da Prata,Operacional
+EQUIP042,Disjuntor,Lopes do Sul,Inativo
+EQUIP043,Relé,Leão Alegre,Em manutenção
+EQUIP044,Transformador,Barros do Amparo,Em manutenção
+EQUIP045,Disjuntor,Sampaio,Inativo
+EQUIP046,Sensor,Cunha,Com falha
+EQUIP047,Disjuntor,Silveira da Praia,Operacional
+EQUIP048,Sensor,da Cruz,Operacional
+EQUIP049,Sensor,Pereira da Praia,Com falha
+EQUIP050,Sensor,Sales do Galho,Com falha
+EQUIP051,Relé,Alves,Operacional
+EQUIP052,Relé,Farias de Campos,Operacional
+EQUIP053,Transformador,Cirino do Norte,Com falha
+EQUIP054,Relé,da Paz,Inativo
+EQUIP055,Medidor,Garcia da Serra,Em manutenção
+EQUIP056,Sensor,Jesus do Sul,Operacional
+EQUIP057,Medidor,Santos,Inativo
+EQUIP058,Disjuntor,da Cruz,Em manutenção
+EQUIP059,Relé,Albuquerque de Vargas,Em manutenção
+EQUIP060,Transformador,Leão,Com falha
+EQUIP061,Relé,Machado do Galho,Operacional
+EQUIP062,Relé,Azevedo Paulista,Com falha
+EQUIP063,Medidor,Martins de Peixoto,Operacional
+EQUIP064,Disjuntor,Câmara,Inativo
+EQUIP065,Medidor,Castro da Serra,Operacional
+EQUIP066,Medidor,Vargas do Norte,Inativo
+EQUIP067,Disjuntor,Novais dos Dourados,Inativo
+EQUIP068,Medidor,Costa,Com falha
+EQUIP069,Sensor,Câmara,Com falha
+EQUIP070,Medidor,Fernandes,Em manutenção
+EQUIP071,Transformador,Lima de Minas,Com falha
+EQUIP072,Relé,Rios de da Luz,Operacional
+EQUIP073,Disjuntor,Freitas,Inativo
+EQUIP074,Medidor,Ribeiro,Em manutenção
+EQUIP075,Relé,Albuquerque do Sul,Em manutenção
+EQUIP076,Sensor,Ramos de Almeida,Em manutenção
+EQUIP077,Transformador,Novais dos Dourados,Inativo
+EQUIP078,Relé,Pastor,Operacional
+EQUIP079,Sensor,das Neves,Operacional
+EQUIP080,Disjuntor,Araújo,Inativo
+EQUIP081,Transformador,Andrade Grande,Com falha
+EQUIP082,Sensor,Ramos,Com falha
+EQUIP083,Relé,Costa Grande,Com falha
+EQUIP084,Relé,Abreu da Mata,Com falha
+EQUIP085,Sensor,Rios,Inativo
+EQUIP086,Transformador,Moura,Com falha
+EQUIP087,Medidor,Sales de Carvalho,Com falha
+EQUIP088,Disjuntor,Moura do Norte,Com falha
+EQUIP089,Sensor,Sales,Operacional
+EQUIP090,Medidor,Nunes,Inativo
+EQUIP091,Sensor,Melo,Operacional
+EQUIP092,Disjuntor,das Neves de da Conceição,Em manutenção
+EQUIP093,Disjuntor,Novaes,Inativo
+EQUIP094,Disjuntor,da Mata,Com falha
+EQUIP095,Sensor,Silveira,Operacional
+EQUIP096,Disjuntor,Pereira Alegre,Com falha
+EQUIP097,Sensor,Abreu Grande,Operacional
+EQUIP098,Sensor,da Rosa do Campo,Com falha
+EQUIP099,Disjuntor,Fernandes do Norte,Operacional
+EQUIP100,Sensor,Porto do Norte,Operacional
