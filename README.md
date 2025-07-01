@@ -34,6 +34,10 @@ O objetivo é **automatizar e centralizar o fluxo de inspeções**, reduzindo pa
 
 ---
 
+### 🔗 Acesse o painel online: [Energral - Painel Gerencial](https://trabalhorpa.onrender.com)
+
+---
+
 ## 🧠 Tecnologias Utilizadas
 
 - `GitHub`

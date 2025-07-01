@@ -2,6 +2,7 @@ pandas
 openpyxl
 fpdf
 streamlit
-plotly
 PyPDF2
 streamlit-calendar
+plotly>=6
+streamlit-option-menu
