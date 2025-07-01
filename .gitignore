@@ -5,7 +5,6 @@ __pycache__/
 env/
 venv/
 .idea/
-.streamlit/
 *.log
 *.tmp
 *.bak
