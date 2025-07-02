@@ -5,6 +5,7 @@ import plotly.express as px
 from datetime import datetime, date
 from fpdf import FPDF
 from io import BytesIO
+from api import obter_chamados
 
 st.set_page_config(page_title="Energral | Gestão Operacional", layout="wide")
 st.title("🔧 Painel Gerencial - Energral")
@@ -304,64 +305,64 @@ elif aba == "Alertas":
         st.download_button("Baixar PDF", buffer, file_name="relatorio_alertas.pdf", mime="application/pdf")
 
 elif aba == "Checklists PDF":
-    st.subheader("📂 Checklists em PDF")
+    st.subheader("📂 Checklists PDF")
 
-    import PyPDF2
+    chamados = obter_chamados()
 
-    pasta = os.path.join(os.path.dirname(__file__), "..", "checklist", "dist")
-    arquivos = [f for f in os.listdir(pasta) if f.endswith(".pdf")]
+    if chamados:
+        df_chamados = pd.DataFrame(chamados)
 
-    registros = []
+        st.dataframe(df_chamados)
 
-    for nome in arquivos:
-        caminho = os.path.join(pasta, nome)
-        with open(caminho, "rb") as f:
-            reader = PyPDF2.PdfReader(f)
-            texto = ""
-            for pagina in reader.pages:
-                texto += pagina.extract_text() + "\n"
+        st.markdown("### Análise dos Chamados")
+        
+        if "Tipo de Inspeção" in df_chamados.columns:
+            tipo = df_chamados["Tipo de Inspeção"].value_counts().reset_index()
+            tipo.columns = ["Tipo", "Quantidade"]
+            st.plotly_chart(px.pie(tipo, names="Tipo", values="Quantidade", title="Distribuição por Tipo de Inspeção"), use_container_width=True)
 
-        def pega(campo):
-            try:
-                return texto.split(f"{campo}:")[1].split("\n")[0].strip()
-            except:
-                return "-"
+        if "Gravidade" in df_chamados.columns:
+            grav = df_chamados["Gravidade"].value_counts().reset_index()
+            grav.columns = ["Gravidade", "Quantidade"]
+            st.plotly_chart(px.bar(grav, x="Gravidade", y="Quantidade", title="Distribuição por Gravidade"), use_container_width=True)
 
-        registros.append({
-            "Arquivo": nome,
-            "Data": pega("Data e Hora"),
-            "Local": pega("Local da Subestação"),
-            "Técnico": pega("Nome do Técnico"),
-            "Tipo de Inspeção": pega("Tipo de Inspeção"),
-            "Gravidade": pega("Gravidade"),
-            "Ação Tomada": pega("Ação Tomada")
-        })
+        if "Técnico" in df_chamados.columns:
+            tecnico = df_chamados["Técnico"].value_counts().reset_index()
+            tecnico.columns = ["Técnico", "Total"]
+            st.plotly_chart(px.bar(tecnico, x="Técnico", y="Total", title="Atuação por Técnico"), use_container_width=True)
 
-    df = pd.DataFrame(registros)
+        if "Ação Tomada" in df_chamados.columns:
+            acao = df_chamados["Ação Tomada"].value_counts().reset_index()
+            acao.columns = ["Ação", "Qtd"]
+            st.plotly_chart(px.pie(acao, names="Ação", values="Qtd", title="Ações Tomadas"), use_container_width=True)
 
-    st.dataframe(df)
+    if not df_chamados.empty and st.button("Gerar Relatório de Chamados"):
+        from fpdf import FPDF
+        from io import BytesIO
 
-    if not df.empty:
-        tipo = df["Tipo de Inspeção"].value_counts().reset_index()
-        tipo.columns = ["Tipo", "Quantidade"]
-        st.plotly_chart(px.pie(tipo, names="Tipo", values="Quantidade", title="Distribuição por Tipo de Inspeção"), use_container_width=True)
+        def gerar_pdf(titulo, df, extras):
+            pdf = FPDF()
+            pdf.add_page()
+            pdf.set_font("Arial", "B", 14)
+            pdf.cell(0, 10, titulo, 0, 1, "C")
+            pdf.set_font("Arial", "", 10)
+            pdf.cell(0, 8, f"Gerado em: {pd.to_datetime('today').strftime('%d/%m/%Y %H:%M:%S')}", 0, 1)
+            pdf.ln(2)
+            for linha in extras:
+                pdf.cell(0, 6, linha, 0, 1)
+            pdf.ln(4)
+            for i, row in df.iterrows():
+                texto = " | ".join(f"{col}: {row[col]}" for col in df.columns[:4])
+                pdf.multi_cell(0, 6, texto, 0, 1)
 
-        grav = df["Gravidade"].value_counts().reset_index()
-        grav.columns = ["Gravidade", "Quantidade"]
-        st.plotly_chart(px.bar(grav, x="Gravidade", y="Quantidade", title="Distribuição por Gravidade"), use_container_width=True)
+            pdf_bytes = pdf.output(dest="S").encode("latin1")
+            buffer = BytesIO(pdf_bytes)
+            return buffer
 
-        tecnico = df["Técnico"].value_counts().reset_index()
-        tecnico.columns = ["Técnico", "Total"]
-        st.plotly_chart(px.bar(tecnico, x="Técnico", y="Total", title="Atuação por Técnico"), use_container_width=True)
-
-        acao = df["Ação Tomada"].value_counts().reset_index()
-        acao.columns = ["Ação", "Qtd"]
-        st.plotly_chart(px.pie(acao, names="Ação", values="Qtd", title="Ações Tomadas"), use_container_width=True)
-    if not df.empty and st.button("Gerar Relatório de Checklists"):
         extras = [
-            f"Total de checklists: {len(df)}",
-            f"Tipos de inspeção: {df['Tipo'].value_counts().to_dict()}",
-            f"Gravidades: {df['Gravidade'].value_counts().to_dict()}",
+            f"Total de chamados: {len(df_chamados)}",
+            f"Distribuição de gravidade: {df_chamados['Gravidade'].value_counts().to_dict()}",
+            f"Tipos de inspeção: {df_chamados['Tipo de Inspeção'].value_counts().to_dict()}",
         ]
-        buffer = gerar_pdf("Relatório de Checklists", df, extras)
-        st.download_button("Baixar PDF", buffer, file_name="relatorio_checklists.pdf", mime="application/pdf")
+        buffer = gerar_pdf("Relatório de Chamados", df_chamados, extras)
+        st.download_button("Baixar Relatório PDF", buffer, file_name="relatorio_chamados.pdf", mime="application/pdf")
