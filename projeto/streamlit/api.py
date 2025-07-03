@@ -1,20 +1,35 @@
 import requests
 
-API_URL = "https://trabalhorpa-api.onrender.com/"
+API_URL = "https://trabalhorpa-api.onrender.com"
 
 def obter_chamados():
-    response = requests.get(f"{API_URL}/chamados/")
-    if response.status_code == 200:
-        return response.json()
-    return []
+    try:
+        resp = requests.get(f"{API_URL}/chamados/", timeout=10)
+        resp.raise_for_status()
+        return resp.json() or []
+    except requests.exceptions.RequestException:
+        return []
 
-def validar_chamado_api(chamado_id: int, validar: bool):
-    response = requests.put(f"{API_URL}/chamado/{chamado_id}/validar", json={"validar": validar})
-    return response.json()
+def validar_chamado_api(chamado_id: int, validar: bool = True):
+    try:
+        params = {"validar": str(validar).lower()}  
+        resp = requests.put(
+            f"{API_URL}/chamado/{chamado_id}/validar",
+            params=params,
+            timeout=10
+        )
+        resp.raise_for_status()
+        return resp.json()
+    except requests.exceptions.RequestException as e:
+        return {"erro": str(e)}
 
 def remover_chamado_por_id_api(chamado_id: int):
-    response = requests.delete(f"{API_URL}/chamado/{chamado_id}")
-    return response.json()
+    try:
+        resp = requests.delete(f"{API_URL}/chamado/{chamado_id}", timeout=10)
+        resp.raise_for_status()
+        return resp.json()
+    except requests.exceptions.RequestException as e:
+        return {"erro": str(e)}
 
 def criar_chamado_api(local_subestacao: str, nome_tecnico: str, acao_tomada: str, gravidade: str, situacao_subestacao: str):
     payload = {
@@ -24,5 +39,9 @@ def criar_chamado_api(local_subestacao: str, nome_tecnico: str, acao_tomada: str
         "gravidade": gravidade,
         "situacao_subestacao": situacao_subestacao
     }
-    response = requests.post(f"{API_URL}/chamado/", data=payload)
-    return response.json()
+    try:
+        resp = requests.post(f"{API_URL}/chamado/", data=payload, timeout=10)
+        resp.raise_for_status()
+        return resp.json()
+    except requests.exceptions.RequestException as e:
+        return {"erro": str(e)}
