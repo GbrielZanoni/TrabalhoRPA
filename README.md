@@ -21,6 +21,11 @@ Este repositório contém a solução desenvolvida pelos integrantes do bootcamp
 
 ---
 
+## Repositório da API
+[Link do Repositório da API](https://github.com/GbrielZanoni/TrabalhoRPA_API)
+
+---
+
 ## 📌 Sobre o Projeto
 
 O projeto consiste em um sistema completo de **Checklist Digital para Técnicos de Campo**, permitindo:
