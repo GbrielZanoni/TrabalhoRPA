@@ -24,6 +24,9 @@ Este repositório contém a solução desenvolvida pelos integrantes do bootcamp
 ## Repositório da API
 [Link do Repositório da API](https://github.com/GbrielZanoni/TrabalhoRPA_API)
 
+## Repositório do APP
+[Link do Repositório da APP](https://github.com/gmoura0/wattsup)
+
 ---
 
 ## 📌 Sobre o Projeto
