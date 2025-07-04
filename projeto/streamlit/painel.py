@@ -7,8 +7,7 @@ from fpdf import FPDF
 from io import BytesIO
 from api import obter_chamados, validar_chamado_api
 from streamlit_echarts import st_echarts
-
-st.set_page_config(page_title="Dashboard Energral", page_icon="⚡", layout="centered")
+import random
 
 st.title("Dashboard Energral")
 
@@ -83,7 +82,6 @@ with st.sidebar:
 aba = st.session_state["navegacao"]
 
 if aba == "Geral":
-    
     st.markdown("---")
     st.subheader("Visão Geral")
     with st.container(border=True):
@@ -97,7 +95,7 @@ if aba == "Geral":
             text-align: center;
             padding: 0.5rem 0;
         """
-        estilo_titulo = "font-size: 16px; color: #888; margin-bottom: 0.2rem;"
+        estilo_titulo = "font-size: 16px; color: #ffffff; margin-bottom: 0.2rem;"
         estilo_valor = "font-size: 32px; font-weight: 600; margin-top: 0;"
 
         with col1:
@@ -162,8 +160,7 @@ if aba == "Geral":
     - Maria Delmonaco – [@mariadelmonaco](https://github.com/mariadelmonaco)
     """)
 
-elif aba == "Técnicos":
-    
+elif aba == "Técnicos": 
     st.markdown("---")
     st.subheader("Equipes Técnicas")
 
@@ -181,7 +178,7 @@ elif aba == "Técnicos":
             text-align: center;
             padding: 0.5rem 0;
         """
-        estilo_titulo = "font-size: 16px; color: #888; margin-bottom: 0.2rem;"
+        estilo_titulo = "font-size: 16px; color: #ffffff; margin-bottom: 0.2rem;"
         estilo_valor = "font-size: 32px; font-weight: 600; margin-top: 0;"
 
         with col1:
@@ -194,7 +191,6 @@ elif aba == "Técnicos":
                 """,
                 unsafe_allow_html=True,
             )
-
         with col2:
             st.markdown(
                 f"""
@@ -205,7 +201,6 @@ elif aba == "Técnicos":
                 """,
                 unsafe_allow_html=True,
             )
-
         with col3:
             st.markdown(
                 f"""
@@ -216,7 +211,6 @@ elif aba == "Técnicos":
                 """,
                 unsafe_allow_html=True,
             )
-
         with col4:
             st.markdown(
                 f"""
@@ -228,17 +222,11 @@ elif aba == "Técnicos":
                 unsafe_allow_html=True,
             )
 
-
     if "area_de_atuacao" in df_tec.columns:
         areas = df_tec["area_de_atuacao"].value_counts()
         option = {
             "tooltip": {"trigger": "item"},
-            "legend": {
-                "top": "bottom",
-                "textStyle": {
-                    "color": "#fff"
-                }
-            },
+            "legend": {"top": "bottom", "textStyle": {"color": "#fff"}},
             "series": [
                 {
                     "name": "Área de Atuação",
@@ -250,11 +238,7 @@ elif aba == "Técnicos":
                         "borderColor": "#fff",
                         "borderWidth": 2
                     },
-                    "label": {
-                        "show": False,
-                        "position": "center",
-                        "color": "#fff"
-                    },
+                    "label": {"show": False, "position": "center", "color": "#fff"},
                     "emphasis": {
                         "label": {
                             "show": True,
@@ -272,23 +256,95 @@ elif aba == "Técnicos":
         from streamlit_echarts import st_echarts
         st_echarts(option, height="400px")
 
-        with st.expander("Dados Detalhados"):
-            st.data_editor(df_tec, use_container_width=True, num_rows="dynamic", disabled=True)
-            
-            extras = [
-                f"Total de funcionários: {len(df_tec)}",
-                f"Distribuição de níveis: {niveis.to_dict()}",
-                f"Áreas de atuação: {areas.to_dict() if 'areas' in locals() else 'N/A'}",
-            ]
-            buffer = gerar_pdf("Relatório de Técnicos", df_tec, extras)
-            
-            st.download_button(
-                label="Gerar Relatório de Técnicos",
-                data=buffer,
-                file_name="relatorio_tecnicos.pdf",
-                mime="application/pdf",
-                use_container_width=True
-            )
+    with st.expander("Dados Detalhados"):
+        st.data_editor(df_tec, use_container_width=True, num_rows="dynamic", disabled=True)
+
+        extras = [
+            f"Total de funcionários: {len(df_tec)}",
+            f"Distribuição de níveis: {niveis.to_dict()}",
+            f"Áreas de atuação: {areas.to_dict() if 'areas' in locals() else 'N/A'}",
+        ]
+        buffer = gerar_pdf("Relatório de Técnicos", df_tec, extras)
+
+        st.download_button(
+            label="Gerar Relatório de Técnicos",
+            data=buffer,
+            file_name="relatorio_tecnicos.pdf",
+            mime="application/pdf",
+            use_container_width=True
+        )
+    st.markdown("### Funcionários")
+
+    def cor_por_area(area):
+        cores = {
+            "Manutenção": "#1e3a8a",
+            "Inspeção": "#065f46",
+            "Segurança": "#7c2d12",
+            "Operações": "#4b5563"
+        }
+        return cores.get(area, "#3b82f6")
+
+    def icone_senioridade(nivel):
+        icones = {
+            "Júnior": "👶",
+            "Pleno": "🧑‍💼",
+            "Sênior": "🧓"
+        }
+        return icones.get(nivel, "🔧")
+
+    for i in range(0, len(df_tec), 4):
+        row = df_tec.iloc[i:i+4]
+        cols = st.columns(len(row))
+
+        for j, (_, item) in enumerate(row.iterrows()):
+            nome = item.get("nome", "Técnico")
+            nivel = item.get("nivel_de_experiencia", "—")
+            area = item.get("area_de_atuacao", "—")
+            iniciais = "".join([parte[0] for parte in nome.split()[:2]]).upper()
+
+            id_ = item.get("id", "—")
+            email = item.get("email", "—")
+            telefone = item.get("telefone", "—")
+            cor = cor_por_area(area)
+            icone = icone_senioridade(nivel)
+
+            tooltip = f"ID: {id_}\nEmail: {email}\nTelefone: {telefone}"
+
+            cols[j].markdown(f"""
+                <div style="padding: 8px;">
+                    <div title="{tooltip}" style="
+                        border-radius: 16px;
+                        background: linear-gradient(135deg, {cor} 0%, #111827 100%);
+                        padding: 16px;
+                        text-align: center;
+                        height: 250px;
+                        box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-between;
+                        transition: all 0.3s ease;
+                        cursor: default;
+                    ">
+                        <div>
+                            <div style="
+                                width:90px;
+                                height:90px;
+                                border-radius:50%;
+                                background:#fff3;
+                                display:flex;
+                                align-items:center;
+                                justify-content:center;
+                                margin:auto;
+                            ">
+                                <span style="font-size:36px;color:#fff;font-weight:700;">{iniciais}</span>
+                            </div>
+                            <div style="font-size:18px; font-weight:600; color:#fff; margin-top:0.8rem;">{nome}</div>
+                            <div style="font-size:14px; color:#d1d5db;">{nivel} {icone}</div>
+                        </div>
+                        <div style="font-size:13px; color:#9ca3af;">{area}</div>
+                    </div>
+                </div>
+            """, unsafe_allow_html=True)
 
 elif aba == "Equipamentos":
     
@@ -309,7 +365,7 @@ elif aba == "Equipamentos":
             min-height: 100px;
             text-align: center;
         """
-        estilo_titulo = "font-size: 14px; color: #888; margin-bottom: 0.2rem;"
+        estilo_titulo = "font-size: 14px; color: #ffffff; margin-bottom: 0.2rem;"
 
         for i, (tipo, qtd) in enumerate(top5.items()):
             cor = "#00cc66" if qtd >= 21 else "#ff4d4d"
@@ -416,48 +472,99 @@ elif aba == "Inspeções":
     st.markdown("---")
     st.subheader("Inspeções Realizadas")
     df_insp = dados["inspeções"]
- 
- 
-    criterio = df_insp["criterio_de_aprovacao"].value_counts().reset_index()
-    criterio.columns = ["Critério", "Quantidade"]
 
-    cor_criterio = {
-        "Sem danos visíveis": "#10B981",  
-        "Funcionamento normal": "#059669",  
-        "Sinal estável": "#FACC15",         
-        "Dentro dos parâmetros": "#EF4444", 
-    }
+    with st.container(border=True):
+            total_insp = len(df_insp)
+            criterio_counts = df_insp["criterio_de_aprovacao"].value_counts().head(4)
+            col1, col2, col3, col4, col5 = st.columns(5)
 
-    criterio_data = []
-    for _, row in criterio.iterrows():
-        nome = row["Critério"]
-        qtd = row["Quantidade"]
-        cor = cor_criterio.get(nome, "#999")  
-        criterio_data.append({
-            "value": qtd,
-            "name": nome,
-            "itemStyle": {"color": cor}
-        })
+            estilo_box = """
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+                min-height: 100px;
+                padding: 5px;
+                box-sizing: border-box;
+                text-align: center;
+            """
+            estilo_titulo = "font-size: 14px; color: #ffffff; margin-bottom: 0.5rem;"
+            estilo_valor_total = "font-size: 28px; font-weight: 700; margin: 0; color: #2DD4BF;"
+            estilo_valor = "font-size: 24px; font-weight: 600; margin: 0;"
 
-    criterio_option = {
-        "tooltip": {"trigger": "axis", "axisPointer": {"type": "shadow"}},
-        "grid": {"left": "3%", "right": "4%", "bottom": "3%", "containLabel": True},
-        "xAxis": {"type": "value"},
-        "yAxis": {
-            "type": "category",
-            "data": criterio["Critério"].tolist(),
-            "axisLabel": {"color": "#fff"},
-        },
-        "series": [
-            {
-                "name": "Inspeções",
-                "type": "bar",
-                "data": criterio_data,
-            }
-        ],
-    }
+            with col1:
+                st.markdown(
+                    f"""
+                    <div style="{estilo_box}">
+                        <div style="{estilo_titulo}">Total de Inspeções</div>
+                        <div style="{estilo_valor_total}">{total_insp}</div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
 
-    st_echarts(options=criterio_option, height="350px")
+            for i, (criterio, qtd) in enumerate(criterio_counts.items()):
+                cor = "#00cc66" if qtd >= 15 else "#ff4d4d"
+                seta = "↑" if qtd >= 15 else "↓"
+                estilo_valor_criterio = f"{estilo_valor} color: {cor};"
+
+                with [col2, col3, col4, col5][i]:
+                    st.markdown(
+                        f"""
+                        <div style="{estilo_box}">
+                            <div style="{estilo_titulo}">{criterio}</div>
+                            <div style="{estilo_valor_criterio}">{qtd} {seta}</div>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+    if "criterio_de_aprovacao" in df_insp.columns:
+        criterio = df_insp["criterio_de_aprovacao"].value_counts().reset_index()
+        criterio.columns = ["Critério", "Quantidade"]
+
+        cor_criterio = {
+            "Sem danos visíveis": "#10B981",
+            "Funcionamento normal": "#059669",
+            "Sinal estável": "#FACC15",
+            "Dentro dos parâmetros": "#EF4444",
+        }
+
+        criterio_data = []
+        for _, row in criterio.iterrows():
+            nome = row["Critério"]
+            qtd = row["Quantidade"]
+            cor = cor_criterio.get(nome, "#999")
+            criterio_data.append({
+                "value": qtd,
+                "name": nome,
+                "itemStyle": {"color": cor}
+            })
+
+        criterio_option = {
+            "tooltip": {
+                "trigger": "axis",
+                "axisPointer": {"type": "shadow"},
+                "textStyle": {"color": "#888"}
+            },
+            "grid": {"left": "3%", "right": "4%", "bottom": "3%", "containLabel": True},
+            "xAxis": {"type": "value"},
+            "yAxis": {
+                "type": "category",
+                "data": criterio["Critério"].tolist(),
+                "axisLabel": {"color": "#fff"},
+            },
+            "series": [
+                {
+                    "name": "Inspeções",
+                    "type": "bar",
+                    "data": criterio_data,
+                }
+            ],
+        }
+
+        st_echarts(options=criterio_option, height="350px")
+
     with st.expander("Dados Detalhados", expanded=False):
         st.data_editor(df_insp, use_container_width=True, num_rows="dynamic", disabled=True)
 
@@ -476,75 +583,395 @@ elif aba == "Inspeções":
         )
 
 elif aba == "Alertas":
-    st.subheader("🚨 Alertas e Notificações")
+    st.markdown("---")
+    st.subheader("Alertas e Notificações")
     df_alertas = dados["alertas"].copy()
+
     if "data/hora" in df_alertas.columns:
         df_alertas["data/hora"] = pd.to_datetime(df_alertas["data/hora"], errors="coerce")
         df_alertas = df_alertas.dropna(subset=["data/hora"])
         df_alertas["data"] = df_alertas["data/hora"].dt.date
-    st.dataframe(df_alertas, hide_index=True)
+
+    with st.container(border=True):
+        total_alertas = len(df_alertas)
+        status_counts = df_alertas["status"].value_counts()
+
+        col1, col2, col3, col4 = st.columns(4)
+
+        estilo_box = """
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            min-height: 120px;
+            padding: 12px;
+            box-sizing: border-box;
+            text-align: center;
+        """
+        estilo_titulo = "font-size: 14px; color: #ffffff; margin-bottom: 0.5rem;"
+        estilo_valor_total = "font-size: 28px; font-weight: 700; margin: 0; color: #2DD4BF;"
+        estilo_valor = "font-size: 24px; font-weight: 600; margin: 0;"
+
+        with col1:
+            st.markdown(
+                f"""
+                <div style="{estilo_box}">
+                    <div style="{estilo_titulo}">Total de Alertas</div>
+                    <div style="{estilo_valor_total}">{total_alertas}</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+        for i, status in enumerate(["Lido", "Pendente", "Resolvido"]):
+            cor = {"Lido": "#f97316", "Pendente": "#ef4444", "Resolvido": "#3b82f6"}.get(status, "#999")
+            qtd = status_counts.get(status, 0)
+            estilo_valor_status = f"{estilo_valor} color: {cor};"
+
+            with [col2, col3, col4][i]:
+                st.markdown(
+                    f"""
+                    <div style="{estilo_box}">
+                        <div style="{estilo_titulo}">{status}</div>
+                        <div style="{estilo_valor_status}">{qtd}</div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
+    if "tipo_de_alerta" in df_alertas.columns:
+        tipo_counts = df_alertas["tipo_de_alerta"].value_counts()
+        pie_data = [{"value": int(qtd), "name": tipo} for tipo, qtd in tipo_counts.items()]
+
+        pie_option = {
+            "tooltip": {
+                "trigger": "item",
+                "formatter": "{b}: {c} ({d}%)", 
+                "textStyle": {"color": "#888"},  
+                "backgroundColor": "#fff"       
+            },
+            "legend": {"top": "bottom", "textStyle": {"color": "#fff"}},
+            "series": [
+                {
+                    "name": "Tipo de Alerta",
+                    "type": "pie",
+                    "radius": ["40%", "70%"],
+                    "label": {"show": True, "color": "#fff"},
+                    "labelLine": {"lineStyle": {"color": "#fff"}},
+                    "data": pie_data
+                }
+            ]
+        }
+
+        st_echarts(options=pie_option, height="350px")
+
     if "status" in df_alertas.columns and not df_alertas.empty:
-        status_count = df_alertas["status"].value_counts().reset_index()
-        status_count.columns = ["status", "quantidade"]
-        st.plotly_chart(px.bar(status_count, x="status", y="quantidade", color="status", color_discrete_map={"Lido": "orange", "Pendente": "red", "Resolvido": "blue"}), use_container_width=True)
-    if "data/hora" in df_alertas.columns and not df_alertas.empty:
-        st.plotly_chart(px.histogram(df_alertas, x="data/hora", nbins=30), use_container_width=True)
-    if st.button("Gerar Relatório de Alertas"):
+        status_counts = df_alertas["status"].value_counts().reset_index()
+        status_counts.columns = ["status", "quantidade"]
+
+        cor_status = {
+            "Lido": "#f97316",
+            "Pendente": "#ef4444",
+            "Resolvido": "#3b82f6"
+        }
+
+        series_data = []
+        for _, row in status_counts.iterrows():
+            nome = row["status"]
+            qtd = row["quantidade"]
+            cor = cor_status.get(nome, "#999")
+            series_data.append({
+                "value": qtd,
+                "name": nome,
+                "itemStyle": {"color": cor}
+            })
+    
+        bar_option = {
+            "tooltip": {"trigger": "axis", "axisPointer": {"type": "shadow"}, "textStyle": {"color": "#888"}},
+            "grid": {"left": "3%", "right": "4%", "bottom": "3%", "containLabel": True},
+            "xAxis": {"type": "value", "axisLabel": {"color": "#fff"}},
+            "yAxis": {
+                "type": "category",
+                "data": status_counts["status"].tolist(),
+                "axisLabel": {"color": "#fff"}
+            },
+            "series": [
+                {
+                    "name": "Status",
+                    "type": "bar",
+                    "data": series_data,
+                    "label": {"show": True, "color": "#fff"}
+                }
+            ]
+        }
+
+        st_echarts(options=bar_option, height="350px")
+
+    if not df_alertas.empty and "data" in df_alertas.columns:
+        calendar_data = df_alertas.groupby("data").size().reset_index(name="count")
+        calendar_data["data"] = calendar_data["data"].astype(str)
+
+        calendar_option = {
+            "tooltip": {"position": "top", "textStyle": {"color": "#888"}},
+            "visualMap": {
+                "min": 0,
+                "max": int(calendar_data["count"].max()),
+                "type": "piecewise",
+                "orient": "horizontal",
+                "left": "center",
+                "top": 0,
+                "textStyle": {"color": "#fff"}
+            },
+            "calendar": {
+                "top": 50,
+                "left": 30,
+                "right": 30,
+                "cellSize": ["auto", 20],
+                "range": str(pd.to_datetime(calendar_data["data"]).min().year),
+                "itemStyle": {"borderWidth": 0.5},
+                "dayLabel": {"color": "#fff"},
+                "monthLabel": {"color": "#fff"},
+                "yearLabel": {"color": "#fff"},
+            },
+            "series": [{
+                "type": "heatmap",
+                "coordinateSystem": "calendar",
+                "data": calendar_data.values.tolist()
+            }]
+        }
+
+        st_echarts(options=calendar_option, height="250px")
+
+    with st.expander("Dados Detalhados", expanded=False):
+        st.data_editor(df_alertas, use_container_width=True, num_rows="dynamic", disabled=True)
+
         extras = [
             f"Total de alertas: {len(df_alertas)}",
             f"Distribuição de status: {df_alertas['status'].value_counts().to_dict()}",
         ]
         buffer = gerar_pdf("Relatório de Alertas", df_alertas, extras)
-        st.download_button("Baixar PDF", buffer, file_name="relatorio_alertas.pdf", mime="application/pdf")
+
+       
+        st.download_button(
+                    "Gerar Relatório de Inspeções",
+                    buffer,
+                    file_name="relatorio_inspecoes.pdf",
+                    mime="relatorio_alertas/pdf",
+                    use_container_width=True,
+                )
 
 elif aba == "Checklists":
-    st.subheader("📂 Checklists")
-    with st.spinner("🔄 Buscando chamados ..."):
+    st.subheader("Checklists")
+    with st.spinner("Buscando chamados ..."):
         chamados = obter_chamados()
+
     if not chamados:
-        st.info("⚠️ Nenhum chamado encontrado.")
+        st.info("Nenhum chamado encontrado.")
         st.stop()
+
     df_chamados = pd.DataFrame(chamados)
-    if "validez" in df_chamados.columns:
-        df_chamados["validez"] = df_chamados["validez"].astype(bool)
-        outras = [c for c in df_chamados.columns if c != "validez"]
-        df_chamados = df_chamados[outras + ["validez"]]
-    st.dataframe(df_chamados, hide_index=True, height=420)
-    st.markdown("### ✅ Validar chamado")
-    csel, cbtn = st.columns([3, 1])
-    with csel:
-        id_opcao = st.selectbox("Selecione o ID", df_chamados["id"] if "id" in df_chamados.columns else df_chamados.index)
-    with cbtn:
-        if st.button("Validar"):
-            with st.spinner("Enviando validação ..."):
-                resultado = validar_chamado_api(int(id_opcao), True)
-            if not resultado.get("erro"):
-                st.success("Chamado validado com sucesso!")
-                st.rerun()
-            else:
-                st.error(f"Erro ao validar: {resultado['erro']}")
-    st.markdown("---\n### Análise dos Chamados")
-    if "Tipo de Inspeção" in df_chamados.columns:
-        tipo = df_chamados["Tipo de Inspeção"].value_counts().reset_index()
-        tipo.columns = ["Tipo", "Quantidade"]
-        st.plotly_chart(px.pie(tipo, names="Tipo", values="Quantidade"), use_container_width=True)
-    if "Gravidade" in df_chamados.columns:
-        grav = df_chamados["Gravidade"].value_counts().reset_index()
-        grav.columns = ["Gravidade", "Quantidade"]
-        st.plotly_chart(px.bar(grav, x="Gravidade", y="Quantidade"), use_container_width=True)
-    if "Técnico" in df_chamados.columns:
-        tecnico = df_chamados["Técnico"].value_counts().reset_index()
-        tecnico.columns = ["Técnico", "Total"]
-        st.plotly_chart(px.bar(tecnico, x="Técnico", y="Total"), use_container_width=True)
-    if "Ação Tomada" in df_chamados.columns:
-        acao = df_chamados["Ação Tomada"].value_counts().reset_index()
-        acao.columns = ["Ação", "Qtd"]
-        st.plotly_chart(px.pie(acao, names="Ação", values="Qtd"), use_container_width=True)
-    if st.button("Gerar Relatório de Chamados"):
+
+    if "data/hora" in df_chamados.columns:
+        df_chamados["data/hora"] = pd.to_datetime(df_chamados["data/hora"], errors="coerce")
+        df_chamados = df_chamados.dropna(subset=["data/hora"])
+        df_chamados["data"] = df_chamados["data/hora"].dt.date
+
+    with st.container(border=True):
+        total_chamados = len(df_chamados)
+        status_counts = df_chamados["situacao_subestacao"].value_counts() if "situacao_subestacao" in df_chamados.columns else {}
+
+        col1, col2, col3, col4 = st.columns(4)
+        estilo_box = """
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            min-height: 120px;
+            padding: 12px;
+            box-sizing: border-box;
+            text-align: center;
+        """
+        estilo_titulo = "font-size: 14px; color: #ffffff; margin-bottom: 0.5rem;"
+        estilo_valor_total = "font-size: 28px; font-weight: 700; margin: 0; color: #2DD4BF;"
+        estilo_valor = "font-size: 24px; font-weight: 600; margin: 0;"
+
+        with col1:
+            st.markdown(
+                f"""
+                <div style="{estilo_box}">
+                    <div style="{estilo_titulo}">Total de Chamados</div>
+                    <div style="{estilo_valor_total}">{total_chamados}</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+        for i, status in enumerate(["Crítica", "Normal", "Quebrada"]):
+            cor = {"Crítica": "#f97316", "Normal": "#10B981", "Quebrada": "#ef4444"}.get(status, "#999")
+            qtd = status_counts.get(status, 0)
+            estilo_valor_status = f"{estilo_valor} color: {cor};"
+
+            if i + 1 < 5:
+                with [col2, col3, col4][i]:
+                    st.markdown(
+                        f"""
+                        <div style="{estilo_box}">
+                            <div style="{estilo_titulo}">{status}</div>
+                            <div style="{estilo_valor_status}">{qtd}</div>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+
+    if "situacao_subestacao" in df_chamados.columns:
+        pie_data = df_chamados["situacao_subestacao"].value_counts().reset_index()
+        pie_data.columns = ["Situação", "Quantidade"]
+        pie_data = [{"value": int(row["Quantidade"]), "name": row["Situação"]} for _, row in pie_data.iterrows()]
+
+        situacao_option = {
+            "tooltip": {
+                "trigger": "item",
+                "formatter": "{b}: {c} ({d}%)",
+                "textStyle": {"color": "#000"},
+                "backgroundColor": "#fff"
+            },
+            "legend": {"top": "bottom", "textStyle": {"color": "#fff"}},
+            "series": [
+                {
+                    "name": "Situação",
+                    "type": "pie",
+                    "radius": ["40%", "70%"],
+                    "label": {"show": True, "color": "#fff"},
+                    "labelLine": {"lineStyle": {"color": "#fff"}},
+                    "data": pie_data
+                }
+            ]
+        }
+
+        st_echarts(options=situacao_option, height="350px")
+
+    if not df_chamados.empty and "data_hora" in df_chamados.columns:
+        df_chamados["data_hora"] = pd.to_datetime(df_chamados["data_hora"], errors="coerce")
+        df_chamados = df_chamados.dropna(subset=["data_hora"])
+        df_chamados["data"] = df_chamados["data_hora"].dt.date
+
+        calendar_data = df_chamados.groupby("data").size().reset_index(name="count")
+        calendar_data["data"] = calendar_data["data"].astype(str)
+
+        calendar_option = {
+            "tooltip": {"position": "top", "textStyle": {"color": "#888"}},
+            "visualMap": {
+                "min": 0,
+                "max": int(calendar_data["count"].max()),
+                "type": "piecewise",
+                "orient": "horizontal",
+                "left": "center",
+                "top": 0,
+                "textStyle": {"color": "#fff"}
+            },
+            "calendar": {
+                "top": 50,
+                "left": 30,
+                "right": 30,
+                "cellSize": ["auto", 20],
+                "range": str(pd.to_datetime(calendar_data["data"]).min().year),
+                "itemStyle": {"borderWidth": 0.5},
+                "dayLabel": {"color": "#fff"},
+                "monthLabel": {"color": "#fff"},
+                "yearLabel": {"color": "#fff"},
+            },
+            "series": [{
+                "type": "heatmap",
+                "coordinateSystem": "calendar",
+                "data": calendar_data.values.tolist()
+            }]
+        }
+
+        st_echarts(options=calendar_option, height="250px")
+
+    if "local_subestacao" in df_chamados.columns and not df_chamados.empty:
+        local_counts = df_chamados["local_subestacao"].value_counts().reset_index()
+        local_counts.columns = ["local_subestacao", "quantidade"]
+
+        cores_unicas = {}
+        for sub in local_counts["local_subestacao"]:
+            if sub not in cores_unicas:
+                cores_unicas[sub] = f"#{random.randint(0, 0xFFFFFF):06x}"
+
+        series_data = [
+            {
+                "value": row["quantidade"],
+                "name": row["local_subestacao"],
+                "itemStyle": {"color": cores_unicas.get(row["local_subestacao"], "#888")}
+            }
+            for _, row in local_counts.iterrows()
+        ]
+
+        bar_local_option = {
+            "tooltip": {
+                "trigger": "axis",
+                "axisPointer": {"type": "shadow"},
+                "textStyle": {"color": "#888"}
+            },
+            "grid": {"left": "3%", "right": "4%", "bottom": "3%", "containLabel": True},
+            "xAxis": {"type": "value", "axisLabel": {"color": "#fff"}},
+            "yAxis": {
+                "type": "category",
+                "data": local_counts["local_subestacao"].tolist(),
+                "axisLabel": {"color": "#fff"}
+            },
+            "series": [
+                {
+                    "name": "Local da Subestação",
+                    "type": "bar",
+                    "data": series_data,
+                    "label": {"show": True, "color": "#fff"}
+                }
+            ]
+        }
+
+        st_echarts(options=bar_local_option, height="350px")
+
+    with st.expander("Dados Detalhados", expanded=False):
+        st.data_editor(df_chamados, use_container_width=True, num_rows="dynamic", disabled=True)
+
         extras = [
             f"Total de chamados: {len(df_chamados)}",
-            f"Distribuição de gravidade: {df_chamados['Gravidade'].value_counts().to_dict()}",
-            f"Tipos de inspeção: {df_chamados['Tipo de Inspeção'].value_counts().to_dict()}",
+            f"Gravidades: {df_chamados['gravidade'].value_counts().to_dict() if 'gravidade' in df_chamados else {}}",
+            f"Tipos de inspeção: {df_chamados['Tipo de Inspeção'].value_counts().to_dict() if 'Tipo de Inspeção' in df_chamados else {}}",
         ]
-        buffer = gerar_pdf("Relatório de Chamados", df_chamados, extras)
-        st.download_button("Baixar Relatório PDF", buffer, file_name="relatorio_chamados.pdf", mime="application/pdf")
+        buffer = gerar_pdf("Relatório de Checklists", df_chamados, extras)
+
+        st.markdown("Validar Chamado")
+
+        with st.form("form_validacao_detalhado"):
+            col1, col2, col3 = st.columns([2, 1, 2])
+            with col1:
+                id_opcao = st.selectbox(
+                    "Selecione o ID",
+                    df_chamados["id"] if "id" in df_chamados.columns else df_chamados.index,
+                    format_func=lambda x: f"Chamado #{x}"
+                )
+            with col2:
+                submit = st.form_submit_button("Validar", use_container_width=True)
+
+            if submit:
+                with st.spinner("Enviando validação..."):
+                    resultado = validar_chamado_api(int(id_opcao), True)
+
+                if not resultado.get("erro"):
+                    st.success(f"Chamado #{id_opcao} validado com sucesso!")
+                    st.rerun()
+                else:
+                    st.error(f"Erro ao validar: {resultado['erro']}")
+    
+        st.download_button(
+            "Gerar Relatório de Checklists",
+            buffer,
+            file_name="relatorio_checklists.pdf",
+            mime="application/pdf",
+            use_container_width=True,
+        )
+
