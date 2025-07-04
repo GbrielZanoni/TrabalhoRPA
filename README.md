@@ -58,8 +58,8 @@ O objetivo é **automatizar e centralizar o fluxo de inspeções**, reduzindo pa
 | Gabriel Zanoni            | [@GbrielZanoni](https://github.com/GbrielZanoni)      | Tech Lead        |
 | Mateus Euzébio            | [@mateuseuz](https://github.com/mateuseuz)            | Project Manager  |
 | Gabriel Moura             | [@gmoura0](https://github.com/gmoura0)                | Project Owner    |
-| João Gabriel              | [@JoaoGabFB](https://github.com/JoaoGabFB)            | Developer        |
 | Maria Delmonaco           | [@mariadelmonaco](https://github.com/mariadelmonaco)  | Developer        |
+| Lucas Saito               | [@lucasaito](https://github.com/lucasaito)            | Internship       |
 
 ---
 
