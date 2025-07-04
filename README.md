@@ -55,6 +55,7 @@ O objetivo é **automatizar e centralizar o fluxo de inspeções**, reduzindo pa
 - `Streamlit` + `Plotly`
 - `PyPDF2` (leitura de PDFs gerados)
 - Organização com `.gitignore` e `requirements.txt`
+- `Android Studio`
 
 ---
 
