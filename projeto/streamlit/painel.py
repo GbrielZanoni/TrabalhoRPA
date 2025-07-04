@@ -156,8 +156,8 @@ if aba == "Geral":
     - Gabriel Zanoni – [@GbrielZanoni](https://github.com/GbrielZanoni)  
     - Mateus Euzébio – [@mateuseuz](https://github.com/mateuseuz)  
     - Gabriel Moura – [@gmoura0](https://github.com/gmoura0)  
-    - João Gabriel – [@JoaoGabFB](https://github.com/JoaoGabFB)  
     - Maria Delmonaco – [@mariadelmonaco](https://github.com/mariadelmonaco)
+    - Lucas Saito – [@lucassaito](https://github.com/lucasaito)  
     """)
 
 elif aba == "Técnicos": 
