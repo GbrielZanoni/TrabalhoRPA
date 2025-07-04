@@ -8,6 +8,7 @@ from io import BytesIO
 from api import obter_chamados, validar_chamado_api
 from streamlit_echarts import st_echarts
 import random
+import time
 
 st.title("Dashboard Energral")
 
@@ -766,6 +767,15 @@ elif aba == "Checklists":
     with st.spinner("Buscando chamados ..."):
         chamados = obter_chamados()
 
+        if "last_update" not in st.session_state:
+            st.session_state["last_update"] = len(chamados)
+
+        if len(chamados) != st.session_state["last_update"]:
+            st.session_state["last_update"] = len(chamados)
+            st.experimental_rerun()
+        else:
+            time.sleep(5)  
+     
     if not chamados:
         st.info("Nenhum chamado encontrado.")
         st.stop()
@@ -781,7 +791,7 @@ elif aba == "Checklists":
         total_chamados = len(df_chamados)
         status_counts = df_chamados["situacao_subestacao"].value_counts() if "situacao_subestacao" in df_chamados.columns else {}
 
-        col1, col2, col3, col4 = st.columns(4)
+        col1, col2, col3 = st.columns(3)
         estilo_box = """
             display: flex;
             flex-direction: column;
@@ -808,22 +818,21 @@ elif aba == "Checklists":
                 unsafe_allow_html=True,
             )
 
-        for i, status in enumerate(["Crítica", "Normal", "Quebrada"]):
-            cor = {"Crítica": "#f97316", "Normal": "#10B981", "Quebrada": "#ef4444"}.get(status, "#999")
+        for i, status in enumerate(["Crítica", "Normal"]):
+            cor = {"Crítica": "#DC2626", "Normal": "#10B981"}.get(status, "#999")
             qtd = status_counts.get(status, 0)
             estilo_valor_status = f"{estilo_valor} color: {cor};"
 
-            if i + 1 < 5:
-                with [col2, col3, col4][i]:
-                    st.markdown(
-                        f"""
-                        <div style="{estilo_box}">
-                            <div style="{estilo_titulo}">{status}</div>
-                            <div style="{estilo_valor_status}">{qtd}</div>
-                        </div>
-                        """,
-                        unsafe_allow_html=True,
-                    )
+            with [col2, col3][i]:
+                st.markdown(
+                    f"""
+                    <div style="{estilo_box}">
+                        <div style="{estilo_titulo}">{status}</div>
+                        <div style="{estilo_valor_status}">{qtd}</div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
 
     if "situacao_subestacao" in df_chamados.columns:
         pie_data = df_chamados["situacao_subestacao"].value_counts().reset_index()
